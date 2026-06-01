@@ -50,5 +50,42 @@ module.exports = {
         } catch (error) {
             return res.status(500).json(response(500, 'Server error', error.message));
         }
+    },
+
+    register: async (req, res) => {
+        console.log("req.body:", req.body);
+        try {
+            const { name, email, password } = req.body;
+
+            // validasi
+            if (!name || !email || !password) {
+                return res.status(400).json(response(400, 'Semua field wajib diisi'));
+            }
+
+            // cek email sudah terdaftar
+            const existingUser = await User.findOne({ where: { email } });
+            if (existingUser) {
+                return res.status(400).json(response(400, 'Email sudah terdaftar'));
+            }
+
+            // hash password
+            const hashedPassword = passwordHash.generate(password);
+
+            // buat user baru yg default rolenya usr
+            const user = await User.create({
+                name,
+                email,
+                password: hashedPassword,
+                role: 'user'
+            });
+
+            return res.status(201).json(response(201, 'Register berhasil', {
+                id: user.id,
+                name: user.name,
+                email: user.email
+            }));
+        } catch (error) {
+            return res.status(500).json(response(500, 'Server error', error.message));
+        }
     }
 }

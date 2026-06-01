@@ -7,5 +7,6 @@ const loginController = require('../controller/login.controller')
 
 router.post('/', upload.none(), loginController.login)
 // router.post('/logout', verifyToken, logoutController.logout);
+router.post('/register', upload.none(), loginController.register);
 
 module.exports = router

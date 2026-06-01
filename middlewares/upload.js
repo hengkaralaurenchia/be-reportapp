@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
     const ext = path.extname(file.originalname);
     // uniqueSuffix isinya nama file random, ext isinya .jpg jadi perlu digabung
-    const name = file.fieldname + '-' + uniqueSuffix + ext; //kenapa fieldname
+    const name = file.fieldname + '-' + uniqueSuffix + ext;
     // imaege-ashjsf.jpg
     cb(null, name)
   }

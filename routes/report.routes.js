@@ -14,7 +14,7 @@ router.put('/:id', verifyToken, upload.single('image'), reportController.updateR
 router.delete('/:id', verifyToken, reportController.deleteReport);
 
 // admin
-router.put('/:id/status', verifyToken, isAdmin, reportController.updateStatus);
+router.put('/:id/status', verifyToken, upload.none(), isAdmin, reportController.updateStatus);
 router.post('/:id/fix-image', verifyToken, isAdmin, upload.single('fix_image'), reportController.uploadFixPhoto);
 
 module.exports = router

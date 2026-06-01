@@ -16,8 +16,7 @@ module.exports = {
             }
             
             const decoded = jwt.verify(token, auth_secret);
-            console.log("Decoded token:", decoded);
-            
+
             req.userId = decoded.userId;
             req.user = {
                 id: decoded.userId,

@@ -2,7 +2,6 @@ const { Notification, Report, User } = require("../models");
 const { response } = require("../helpers/response.formatter");
 
 module.exports = {
-    // Ambil semua notifikasi user yang login
     getNotifications: async (req, res) => {
         try {
             const notifications = await Notification.findAll({
@@ -21,8 +20,6 @@ module.exports = {
             return res.status(500).json(response(500, 'Server error', error.message));
         }
     },
-
-    // Tandai notifikasi sudah dibaca
     markAsRead: async (req, res) => {
         try {
             const { id } = req.params;
@@ -38,8 +35,6 @@ module.exports = {
             return res.status(500).json(response(500, 'Server error', error.message));
         }
     },
-
-    // Tandai semua notifikasi sudah dibaca
     markAllAsRead: async (req, res) => {
         try {
             await Notification.update(
@@ -51,8 +46,6 @@ module.exports = {
             return res.status(500).json(response(500, 'Server error', error.message));
         }
     },
-
-    // Hapus notifikasi per ID
     deleteNotification: async (req, res) => {
         try {
             const { id } = req.params;
@@ -72,8 +65,6 @@ module.exports = {
             return res.status(500).json(response(500, 'Server error', error.message));
         }
     },
-
-    // Hapus semua notifikasi user
     deleteAllNotifications: async (req, res) => {
         try {
             await Notification.destroy({
