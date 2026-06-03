@@ -59,10 +59,20 @@ module.exports = {
     getReport: async (req, res) => {
         try {
             const { status, sortBy, order } = req.query;
+            const userId = req.userId;
+            const isAdmin = req.user?.role === 'admin';
+
+            let where = {};
+            if (!isAdmin) {
+                where.user_id = userId;
+            }
+            if (status) {
+                where.status = status;
+            }
 
             const reports = await Report.findAll({
-                where: status ? { status } : {},
-                order: sortBy ? [[sortBy, order]] : [],
+                where: where,
+                order: sortBy ? [[sortBy, order]] : [['createdAt', 'DESC']],
                 include: [
                     {
                         model: User,
@@ -81,11 +91,25 @@ module.exports = {
     getReportById: async (req, res) => {
         try {
             const { id } = req.params;
+            const userId = req.userId;
+            const isAdmin = req.user?.role === 'admin';
 
-            const report = await Report.findByPk(id);
+            const report = await Report.findByPk(id, {
+                include: [
+                    {
+                        model: User,
+                        as: 'user',
+                        attributes: ['id', 'name', 'email']
+                    }
+                ]
+            });
 
             if (!report) {
                 return res.status(404).json(response(404, 'Laporan tidak ditemukan'));
+            }
+
+            if (!isAdmin && report.user_id !== userId) {
+                return res.status(403).json(response(403, 'Akses ditolak'));
             }
 
             return res.status(200).json(response(200, 'success', report));
@@ -98,12 +122,14 @@ module.exports = {
         try {
             const { id } = req.params;
             const { type, location, description } = req.body;
+            const userId = req.userId;
+            const isAdmin = req.user?.role === 'admin';
 
             //validasi data
             const schema = {
                 type: { type: "string", min: 2 },
                 location: { type: "string", min: 3 },
-                description: { type: "string", min: 10 },
+                description: { type: "string", min: 5 },
             }
 
             const data = { type, location, description };
@@ -117,6 +143,10 @@ module.exports = {
             //jika ga ada kembalikan error
             if (!report) {
                 return res.status(404).json(response(404, 'Data not found'));
+            }
+
+            if (!isAdmin && report.user_id !== userId) {
+                return res.status(403).json(response(403, 'Akses ditolak'));
             }
 
             if (req.file) {
@@ -153,12 +183,18 @@ module.exports = {
     deleteReport: async (req, res) => {
         try {
             const { id } = req.params;
+            const userId = req.userId;
+            const isAdmin = req.user?.role === 'admin';
 
             // ambil data report untuk diambil gambar dan dihapus
             const report = await Report.findByPk(id);
 
             if (!report) {
                 return res.status(404).json(response(404, "Data not found"));
+            }
+
+            if (!isAdmin && report.user_id !== userId) {
+                return res.status(403).json(response(403, 'Akses ditolak'));
             }
 
             // hapus file foto laporan pas klaporan di apus : user

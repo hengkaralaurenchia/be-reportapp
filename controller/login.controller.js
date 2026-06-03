@@ -33,10 +33,18 @@ module.exports = {
                 return res.status(400).json(response(400, 'Invalid password'));
             }
 
-            //buat token
-            const token = jwt.sign({ userId: user.id, email: user.email, name: user.name, role: user.role }, auth_secret, {
-                expiresIn: '1h'
-            });
+            //buat token : jwt.sign
+            const token = jwt.sign(
+                {
+                    userId: user.id,
+                    email: user.email,
+                    name: user.name,
+                    role: user.role
+                },
+                    auth_secret, {
+                    expiresIn: '1h'
+                }
+            );
 
             const data = {
                 data: {

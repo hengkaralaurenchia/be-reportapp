@@ -32,14 +32,14 @@ module.exports = (sequelize, DataTypes) => {
         //getter : menipulasi data hasil response datanya
         const rawValue = this.getDataValue('image');
         //image yg di db cuman filename, di response jadi link yg bisa dibuka/ditampilin gambarnya
-        return rawValue ? `http://192.168.1.10:5000/uploads/${rawValue}` : null;
+        return rawValue ? `http://10.53.168.72:5000/uploads/${rawValue}` : null;
       }
     },
     fix_image: {
       type: DataTypes.STRING,
       get() {
         const rawValue = this.getDataValue('fix_image');
-        return rawValue ? `http://192.168.1.10:5000/uploads/${rawValue}` : null;
+        return rawValue ? `http://10.53.168.72:5000/uploads/${rawValue}` : null;
       }
     },
     status: DataTypes.STRING,
